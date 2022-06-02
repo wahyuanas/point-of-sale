@@ -13,7 +13,6 @@ type Client interface {
 	Update(ctx context.Context, in *pb.UpdateRequest) (*pb.UpdateResponse, error)
 	Delete(ctx context.Context, in *pb.DeleteRequest) (*pb.DeleteResponse, error)
 	GetAccount(ctx context.Context, in *pb.GetAccountRequest) (*pb.GetAccountResponse, error)
-
 	GetAccounts(ctx context.Context, in *pb.EmptyRequest) (*pb.GetAccountsResponse, error)
 	Close()
 }

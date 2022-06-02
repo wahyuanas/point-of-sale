@@ -2,6 +2,7 @@ syntax = "proto3";
 
 option go_package = ".;pb";
 
+
 message User {
     string id = 1;
     string userName = 2;
@@ -10,6 +11,12 @@ message User {
     string email       = 5;
     string phoneNumber = 6;
 
+}
+
+message CommonResponse {
+    bool status = 1;
+    int64 code = 2;
+    string message = 3;
 }
 
 message SignUpRequest {
@@ -21,14 +28,10 @@ message SignUpRequest {
 
 }
 
-message CommonResponse {
-    bool status = 1;
-    int64 code = 2;
-    string message = 3;
-}
 
 message SignUpResponse {
     CommonResponse response = 1;
+    int64 id = 2;
 }
 
 message SignInRequest {
@@ -47,6 +50,7 @@ message SignOutRequest {
 
 message SignOutResponse {
     CommonResponse response = 1;
+    int64 id = 2;
 }
 
 message UpdateRequest {
@@ -56,11 +60,12 @@ message UpdateRequest {
     string password = 4;
     string email       = 5;
     string phoneNumber = 6;
-
+  
 }
 
 message UpdateResponse {
     CommonResponse response = 1;
+    User user = 2;
 }
 
 message DeleteRequest {
@@ -69,6 +74,7 @@ message DeleteRequest {
 
 message DeleteResponse {
     CommonResponse response = 1;
+    int64 id = 2;
 }
 
 message GetAccountRequest {

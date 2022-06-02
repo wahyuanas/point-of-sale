@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/wahyuanas/point-of-sale/account/grpc/server"
+	"github.com/wahyuanas/point-of-sale/account/delivery/grpc/server"
 )
 
 func main() {

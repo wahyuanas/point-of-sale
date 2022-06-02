@@ -10,7 +10,7 @@ type accountService struct {
 	accountRepository repository.AccountRepository
 }
 
-func ImplAccountService(acc repository.AccountRepository) AccountService {
+func NewAccountService(acc repository.AccountRepository) AccountService {
 	return &accountService{acc}
 }
 
