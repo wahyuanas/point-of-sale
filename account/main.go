@@ -2,31 +2,26 @@ package main
 
 import (
 	"log"
+	"net"
 
-	"github.com/kelseyhightower/envconfig"
 	"github.com/wahyuanas/point-of-sale/account/grpc/server"
-	"github.com/wahyuanas/point-of-sale/account/repository"
-	"github.com/wahyuanas/point-of-sale/account/service"
 )
 
-type Config struct {
-	DatabaseURL string `envconfig:"DATABASE_URL"`
-}
-
 func main() {
-	var cfg Config
-	err := envconfig.Process("", &cfg)
+
+	log.Println("Starting listening on port 8080")
+	port := ":8080"
+
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to listen: %v", err)
+	}
+	log.Printf("Listening on %s", port)
+
+	srv := server.NewGRPCServer()
+
+	if err := srv.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 
-	var accrRepo repository.AccountRepository
-	accrRepo, err = repository.ImplAccountRepository(cfg.DatabaseURL)
-	if err != nil {
-		log.Println(err)
-	}
-
-	log.Println("Listening on port 8080...")
-	s := service.ImplAccountService(accrRepo)
-	log.Fatal(server.ServeGRPC(s, 8080))
 }

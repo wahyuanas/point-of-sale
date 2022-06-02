@@ -2,32 +2,45 @@ package server
 
 import (
 	"context"
-	"fmt"
-	"net"
+	"log"
 
+	"github.com/kelseyhightower/envconfig"
 	"github.com/wahyuanas/point-of-sale/account/grpc/proto/pb"
+	"github.com/wahyuanas/point-of-sale/account/repository"
 	"github.com/wahyuanas/point-of-sale/account/service"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
+
+type Config struct {
+	DatabaseURL string `envconfig:"DATABASE_URL"`
+}
 
 type grpcServer struct {
 	pb.UnimplementedAccountServiceServer
 	service service.AccountService
 }
 
-func ServeGRPC(s service.AccountService, port int) error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+func NewGRPCServer() *grpc.Server {
+	var cfg Config
+	err := envconfig.Process("", &cfg)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	srv := grpc.NewServer()
-	pb.RegisterAccountServiceServer(srv, &grpcServer{
+
+	var accRepo repository.AccountRepository
+	accRepo, err = repository.ImplAccountRepository(cfg.DatabaseURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	svc := service.ImplAccountService(accRepo)
+
+	gsrv := grpc.NewServer()
+	pb.RegisterAccountServiceServer(gsrv, &grpcServer{
 		UnimplementedAccountServiceServer: pb.UnimplementedAccountServiceServer{},
-		service:                           s,
+		service:                           svc,
 	})
-	reflection.Register(srv)
-	return srv.Serve(lis)
+	return gsrv
 }
 
 func (s *grpcServer) PostAccount(ctx context.Context, r *pb.PostAccountRequest) (*pb.PostAccountResponse, error) {
