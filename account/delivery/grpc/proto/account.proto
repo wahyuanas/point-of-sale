@@ -38,6 +38,7 @@ message SignInRequest {
 
 message SignInResponse {
     CommonResponse response = 1;
+    User user = 2;
 }
 
 message SignOutRequest {
@@ -99,6 +100,8 @@ service AccountService {
     rpc Update(UpdateRequest) returns (UpdateResponse) {
     }
     rpc Delete(DeleteRequest) returns (DeleteResponse) {
+    }
+    rpc GetAccount (GetAccountRequest) returns (GetAccountResponse) {
     }
     rpc GetAccounts (EmptyRequest) returns (GetAccountsResponse) {
     }
