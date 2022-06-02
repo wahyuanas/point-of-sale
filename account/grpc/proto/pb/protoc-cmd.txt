@@ -1,4 +1,0 @@
-C:\protoc-21.1-win64\bin\protoc ./account/grpc/proto/account.proto --go-grpc_out=./account/grpc/proto/pb/
-
-
-C:\protoc-21.1-win64\bin\protoc ./account/grpc/proto/account.proto --go_out=./account/grpc/proto/pb/
