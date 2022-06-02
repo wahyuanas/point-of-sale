@@ -1,6 +1,10 @@
 package service
 
-import "github.com/wahyuanas/point-of-sale/account/repository"
+import (
+	objectvalue "github.com/wahyuanas/point-of-sale/account/api/object-value"
+	"github.com/wahyuanas/point-of-sale/account/entity"
+	"github.com/wahyuanas/point-of-sale/account/repository"
+)
 
 type accountService struct {
 	accountRepository repository.AccountRepository
@@ -10,10 +14,12 @@ func ImplAccountService(acc repository.AccountRepository) AccountService {
 	return &accountService{acc}
 }
 
-func (srv *accountService) SignIn()      {}
-func (srv *accountService) SignUp()      {}
-func (srv *accountService) SignOut()     {}
-func (srv *accountService) Update()      {}
-func (srv *accountService) Delete()      {}
-func (srv *accountService) GetAccount()  {}
-func (srv *accountService) GetAccounts() {}
+func (srv *accountService) SignIn(cmd *objectvalue.SignIn) (*entity.User, error) {
+
+}
+func (srv *accountService) SignUp(cmd *objectvalue.SignUp) (*entity.User, error)         {}
+func (srv *accountService) SignOut(cmd *objectvalue.SignOut) (*entity.User, error)       {}
+func (srv *accountService) Update(cmd *objectvalue.Update) (*entity.User, error)         {}
+func (srv *accountService) Delete(cmd *objectvalue.Delete) (*entity.User, error)         {}
+func (srv *accountService) GetAccount(cmd *objectvalue.GetAccount) (*entity.User, error) {}
+func (srv *accountService) GetAccounts() ([]entity.User, error)                          {}

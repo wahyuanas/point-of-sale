@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+
+message User {
+    string id = 1;
+    string userName = 2;
+    string name = 3;
+    string password = 4;
+    string email       = 5;
+    string phoneNumber = 6;
+
+}
+
+message SignUpRequest {
+    string userName = 1;
+    string name = 2;
+    string password = 3;
+    string email       = 4;
+    string phoneNumber = 5;
+
+}
+
+message CommonResponse {
+    bool status = 1;
+    int64 code = 2;
+    string message = 3;
+}
+
+message SignUpResponse {
+    CommonResponse response = 1;
+}
+
+message SignInRequest {
+    string userName = 1;
+    string Password = 2;
+}
+
+message SignInResponse {
+    CommonResponse response = 1;
+}
+
+message SignOutRequest {
+    int64 id = 1;
+}
+
+message SignOutResponse {
+    CommonResponse response = 1;
+}
+
+message UpdateRequest {
+    string id = 1;
+    string userName = 2;
+    string name = 3;
+    string password = 4;
+    string email       = 5;
+    string phoneNumber = 6;
+
+}
+
+message UpdateResponse {
+    CommonResponse response = 1;
+}
+
+message DeleteRequest {
+    int64 id = 1;
+}
+
+message DeleteResponse {
+    CommonResponse response = 1;
+}
+
+message GetAccountRequest {
+    int64 id = 1;
+}
+
+message GetAccountResponse {
+    CommonResponse response = 1;
+    User user = 2;
+}
+
+message EmptyRequest {    
+}
+
+message GetAccountsResponse {
+    CommonResponse response = 1;
+    repeated User user = 2;
+}
+
+
+
+service AccountService {
+    rpc SignUp(SignUpRequest) returns (SignUpResponse) {
+    }
+    rpc SignIn(SignInRequest) returns (SignInResponse) {
+    }
+    rpc SignOut(SignOutRequest) returns (SignOutResponse) {
+    }
+    rpc Update(UpdateRequest) returns (UpdateResponse) {
+    }
+    rpc Delete(DeleteRequest) returns (DeleteResponse) {
+    }
+    rpc GetAccounts (EmptyRequest) returns (GetAccountsResponse) {
+    }
+}
