@@ -2,19 +2,27 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type CommonOutput struct {
+	Status  bool    `json:"status"`
+	Code    int     `json:"code"`
+	Message *string `json:"message"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type SignInInput struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type SignInOutput struct {
+	Respon *CommonOutput `json:"respon"`
+	User   *User         `json:"user"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID          int    `json:"id"`
+	Username    string `json:"username"`
+	Name        string `json:"name"`
+	Password    string `json:"password"`
+	Email       string `json:"email"`
+	Phonenumber string `json:"phonenumber"`
 }
