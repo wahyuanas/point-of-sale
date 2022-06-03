@@ -95,7 +95,7 @@ message GetAccountsResponse {
 }
 
 message GetAccountsRequest {
-    int64 num = 1;
+    int64 fly = 1;
     string pos = 2;
 }
 
