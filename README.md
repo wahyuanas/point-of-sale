@@ -36,7 +36,7 @@ mutation {
 }
 
 
-- Output's Gonna Be
+- Output Should Be
 
 {
   "data": {
