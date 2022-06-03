@@ -94,6 +94,12 @@ message GetAccountsResponse {
     repeated User user = 2;
 }
 
+message GetAccountsRequest {
+    int64 num = 1;
+    string pos = 2;
+}
+
+
 
 
 service AccountService {
@@ -109,6 +115,6 @@ service AccountService {
     }
     rpc GetAccount (GetAccountRequest) returns (GetAccountResponse) {
     }
-    rpc GetAccounts (EmptyRequest) returns (GetAccountsResponse) {
+    rpc GetAccounts (GetAccountsRequest) returns (stream GetAccountsResponse) {
     }
 }

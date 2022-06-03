@@ -28,7 +28,7 @@ type AccountServiceClient interface {
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error)
-	GetAccounts(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*GetAccountsResponse, error)
+	GetAccounts(ctx context.Context, in *GetAccountsRequest, opts ...grpc.CallOption) (AccountService_GetAccountsClient, error)
 }
 
 type accountServiceClient struct {
@@ -93,13 +93,36 @@ func (c *accountServiceClient) GetAccount(ctx context.Context, in *GetAccountReq
 	return out, nil
 }
 
-func (c *accountServiceClient) GetAccounts(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*GetAccountsResponse, error) {
-	out := new(GetAccountsResponse)
-	err := c.cc.Invoke(ctx, "/AccountService/GetAccounts", in, out, opts...)
+func (c *accountServiceClient) GetAccounts(ctx context.Context, in *GetAccountsRequest, opts ...grpc.CallOption) (AccountService_GetAccountsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AccountService_ServiceDesc.Streams[0], "/AccountService/GetAccounts", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &accountServiceGetAccountsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type AccountService_GetAccountsClient interface {
+	Recv() (*GetAccountsResponse, error)
+	grpc.ClientStream
+}
+
+type accountServiceGetAccountsClient struct {
+	grpc.ClientStream
+}
+
+func (x *accountServiceGetAccountsClient) Recv() (*GetAccountsResponse, error) {
+	m := new(GetAccountsResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // AccountServiceServer is the server API for AccountService service.
@@ -112,7 +135,7 @@ type AccountServiceServer interface {
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
 	GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error)
-	GetAccounts(context.Context, *EmptyRequest) (*GetAccountsResponse, error)
+	GetAccounts(*GetAccountsRequest, AccountService_GetAccountsServer) error
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -138,8 +161,8 @@ func (UnimplementedAccountServiceServer) Delete(context.Context, *DeleteRequest)
 func (UnimplementedAccountServiceServer) GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccount not implemented")
 }
-func (UnimplementedAccountServiceServer) GetAccounts(context.Context, *EmptyRequest) (*GetAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAccounts not implemented")
+func (UnimplementedAccountServiceServer) GetAccounts(*GetAccountsRequest, AccountService_GetAccountsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAccounts not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 
@@ -262,22 +285,25 @@ func _AccountService_GetAccount_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AccountService_GetAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _AccountService_GetAccounts_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetAccountsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(AccountServiceServer).GetAccounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AccountService/GetAccounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServiceServer).GetAccounts(ctx, req.(*EmptyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(AccountServiceServer).GetAccounts(m, &accountServiceGetAccountsServer{stream})
+}
+
+type AccountService_GetAccountsServer interface {
+	Send(*GetAccountsResponse) error
+	grpc.ServerStream
+}
+
+type accountServiceGetAccountsServer struct {
+	grpc.ServerStream
+}
+
+func (x *accountServiceGetAccountsServer) Send(m *GetAccountsResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
@@ -311,11 +337,13 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetAccount",
 			Handler:    _AccountService_GetAccount_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetAccounts",
-			Handler:    _AccountService_GetAccounts_Handler,
+			StreamName:    "GetAccounts",
+			Handler:       _AccountService_GetAccounts_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "account/delivery/grpc/proto/account.proto",
 }

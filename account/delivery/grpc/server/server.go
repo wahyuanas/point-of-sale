@@ -61,6 +61,6 @@ func (s *grpcServer) Delete(context.Context, *pb.DeleteRequest) (*pb.DeleteRespo
 func (s *grpcServer) GetAccount(context.Context, *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccount not implemented")
 }
-func (s *grpcServer) GetAccounts(context.Context, *pb.EmptyRequest) (*pb.GetAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAccounts not implemented")
+func (s *grpcServer) GetAccounts(*pb.GetAccountsRequest, pb.AccountService_GetAccountsServer) error {
+	return nil
 }

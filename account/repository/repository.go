@@ -19,7 +19,7 @@ func NewAccountRepository(db *sql.DB) AccountRepository {
 }
 
 func (acc *accountRepository) SignIn(cmd *objectvalue.SignIn) (*response.SignInResponse, error) {
-	return &response.SignInResponse{CommonResponse: response.CommonResponse{Status: true, Code: 200, Message: "Success"}, User: entity.User{ID: 123, UserName: cmd.UserName, Name: "test", Password: "%r@*7%6789", Email: "test@test.com", PhoneNumber: "081234567890"}}, nil
+	return &response.SignInResponse{CommonResponse: response.CommonResponse{Status: true, Code: 200, Message: "Success"}, User: entity.User{ID: 123, UserName: cmd.UserName, Name: "test", Password: cmd.Password, Email: "test@test.com", PhoneNumber: "081234567890"}}, nil
 
 	//return nil, nil
 }
