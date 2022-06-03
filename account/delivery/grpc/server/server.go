@@ -2,9 +2,8 @@ package server
 
 import (
 	"context"
-	"log"
+	"database/sql"
 
-	"github.com/kelseyhightower/envconfig"
 	objectvalue "github.com/wahyuanas/point-of-sale/account/api/object-value"
 	"github.com/wahyuanas/point-of-sale/account/delivery/grpc/proto/pb"
 	"github.com/wahyuanas/point-of-sale/account/repository"
@@ -14,50 +13,41 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type Config struct {
-	DatabaseURL string `envconfig:"DATABASE_URL"`
-}
-
 type grpcServer struct {
 	pb.UnimplementedAccountServiceServer
 	service service.AccountService
 }
 
-func NewGRPCServer() *grpc.Server {
-	var cfg Config
-	err := envconfig.Process("", &cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var accRepo repository.AccountRepository
-	accRepo, err = repository.ImplAccountRepository(cfg.DatabaseURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	svc := service.ImplAccountService(accRepo)
-
-	gsrv := grpc.NewServer()
-	pb.RegisterAccountServiceServer(gsrv, &grpcServer{
+func NewGRPCServer(db *sql.DB) *grpc.Server {
+	r := repository.NewAccountRepository(db)
+	s := service.NewAccountService(r)
+	g := grpc.NewServer()
+	pb.RegisterAccountServiceServer(g, &grpcServer{
 		UnimplementedAccountServiceServer: pb.UnimplementedAccountServiceServer{},
-		service:                           svc,
+		service:                           s,
 	})
-	return gsrv
+	return g
 }
 
 func (s *grpcServer) SignUp(ctx context.Context, in *pb.SignUpRequest) (*pb.SignUpResponse, error) {
-	obj := objectvalue.SignUp{UserName: in.UserName, Name: in.Name, Password: in.Password, Email: in.Email, PhoneNumber: in.PhoneNumber}
-	_, err := s.service.SignUp(&obj)
+	// obj := objectvalue.SignUp{UserName: in.UserName, Name: in.Name, Password: in.Password, Email: in.Email, PhoneNumber: in.PhoneNumber}
+	// _, err := s.service.SignUp(&obj)
 	resp := &pb.SignUpResponse{Response: &pb.CommonResponse{
 		Status: true, Code: 200, Message: "SUKSES",
 	}}
 
-	return resp, err
+	return resp, nil
 
 }
-func (s *grpcServer) SignIn(context.Context, *pb.SignInRequest) (*pb.SignInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignIn not implemented")
+func (s *grpcServer) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.SignInResponse, error) {
+	cmd := &objectvalue.SignIn{UserName: in.UserName, Password: in.Password}
+	r, err := s.service.SignIn(cmd)
+	if err != nil {
+		return &pb.SignInResponse{Response: &pb.CommonResponse{Status: false, Code: 404, Message: "Failed"}, User: nil}, err
+	}
+	u := &pb.User{Id: r.User.ID, UserName: r.User.UserName, Name: r.User.Name, Password: r.User.Password, Email: r.User.Email, PhoneNumber: r.User.PhoneNumber}
+	return &pb.SignInResponse{Response: &pb.CommonResponse{Status: true, Code: 200, Message: "Success"}, User: u}, err
+
 }
 func (s *grpcServer) SignOut(context.Context, *pb.SignOutRequest) (*pb.SignOutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
