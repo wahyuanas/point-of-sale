@@ -8,25 +8,25 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type client struct {
+type Client struct {
 	conn          *grpc.ClientConn
 	serviceClient pb.AccountServiceClient
 }
 
-func NewClient(url string) (Client, error) {
+func NewClient(url string) (*Client, error) {
 	conn, err := grpc.Dial(url, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
 	serviceClient := pb.NewAccountServiceClient(conn)
-	return &client{conn, serviceClient}, nil
+	return &Client{conn, serviceClient}, nil
 }
 
 // func (c *client) SignUp(ctx context.Context, in *pb.SignUpRequest) (*pb.SignUpResponse, error) {
 // 	return c.serviceClient.SignUp(ctx, in)
 // }
 
-func (c *client) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.SignInResponse, error) {
+func (c *Client) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.SignInResponse, error) {
 	return c.serviceClient.SignIn(ctx, in)
 }
 
@@ -46,6 +46,6 @@ func (c *client) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.SignInRe
 // 	return c.serviceClient.GetAccounts(ctx, in)
 // }
 
-func (c *client) Close() {
+func (c *Client) Close() {
 	c.conn.Close()
 }

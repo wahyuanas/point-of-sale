@@ -20,6 +20,7 @@ type AppConfig struct {
 	DatabasePassword string `envconfig:"DB_PASSWORD"`
 	DatabaseName     string `envconfig:"DB_NAME"`
 	DatabaseDriver   string `envconfig:"DB_DRIVER"`
+	AppPort          string `envconfig:"APP_PORT"`
 }
 
 func main() {
@@ -44,14 +45,13 @@ func main() {
 	} else {
 		fmt.Printf("We are connected to the %s database", cfg.DatabaseDriver)
 	}
-	log.Println("Starting listening on port 8080")
-	port := ":8080"
+	log.Println("Starting listening on port ", cfg.AppPort)
 
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.AppPort))
 	if err != nil {
-		log.Fatal("failed to listen: v", err)
+		log.Fatal("failed to listen: ", err)
 	}
-	log.Printf("Listening on %s", port)
+	log.Printf("Listening on %s", cfg.AppPort)
 
 	srv := server.NewGRPCServer(db)
 

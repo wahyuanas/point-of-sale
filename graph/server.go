@@ -11,8 +11,6 @@ import (
 	"github.com/wahyuanas/point-of-sale/graph/generated"
 )
 
-const defaultPort = "8080"
-
 type AppConfig struct {
 	AccountServiceUrl string `envconfig:"ACCOUNT_SERVICE_URL"`
 	AppPort           string `envconfig:"APP_PORT"`
@@ -30,11 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	port := cfg.AppPort
-	log.Println("PORT ", cfg.AccountServiceUrl, port)
-	if port == "" {
-		port = defaultPort
-	}
+	log.Println("PORT", cfg.AppPort)
 
 	r, err := NewGraphQLServer(cfg.AccountServiceUrl)
 	if err != nil {
@@ -46,6 +40,6 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", cfg.AppPort)
+	log.Fatal(http.ListenAndServe(":"+cfg.AppPort, nil))
 }

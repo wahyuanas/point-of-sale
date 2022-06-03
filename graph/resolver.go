@@ -1,6 +1,10 @@
 package main
 
-import "github.com/wahyuanas/point-of-sale/account/delivery/grpc/client"
+import (
+	"log"
+
+	"github.com/wahyuanas/point-of-sale/account/delivery/grpc/client"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -10,13 +14,14 @@ type Resolver struct {
 	accountClient *client.Client
 }
 
-func NewGraphQLServer(accountUrl string) (*Resolver, error) {
-	accountClient, err := client.NewClient(accountUrl)
+func NewGraphQLServer(accountServiceUrl string) (*Resolver, error) {
+	a, err := client.NewClient(accountServiceUrl)
+	log.Println("CLIENT GRPC", accountServiceUrl, a, err)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Resolver{
-		accountClient: &accountClient,
+		a,
 	}, nil
 }

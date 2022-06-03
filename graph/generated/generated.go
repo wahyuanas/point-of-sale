@@ -118,12 +118,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.CommonOutput.Status(childComplexity), true
 
-	case "Mutation.SignIn":
+	case "Mutation.signIn":
 		if e.complexity.Mutation.SignIn == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_SignIn_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_signIn_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -301,7 +301,7 @@ type Query {
 }
 
 type Mutation {
-  SignIn(input: SignInInput!): SignInOutput!
+  signIn(input: SignInInput!): SignInOutput!
 }
 `, BuiltIn: false},
 }
@@ -311,7 +311,7 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_SignIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_signIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.SignInInput
@@ -508,8 +508,8 @@ func (ec *executionContext) fieldContext_CommonOutput_message(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_SignIn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_SignIn(ctx, field)
+func (ec *executionContext) _Mutation_signIn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_signIn(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -539,7 +539,7 @@ func (ec *executionContext) _Mutation_SignIn(ctx context.Context, field graphql.
 	return ec.marshalNSignInOutput2ᚖgithubᚗcomᚋwahyuanasᚋpointᚑofᚑsaleᚋgraphᚋmodelᚐSignInOutput(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_SignIn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_signIn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -562,7 +562,7 @@ func (ec *executionContext) fieldContext_Mutation_SignIn(ctx context.Context, fi
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_SignIn_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_signIn_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -3058,10 +3058,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "SignIn":
+		case "signIn":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_SignIn(ctx, field)
+				return ec._Mutation_signIn(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

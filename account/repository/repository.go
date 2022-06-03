@@ -7,6 +7,7 @@ import (
 
 	objectvalue "github.com/wahyuanas/point-of-sale/account/api/object-value"
 	"github.com/wahyuanas/point-of-sale/account/api/response"
+	"github.com/wahyuanas/point-of-sale/account/entity"
 )
 
 type accountRepository struct {
@@ -17,6 +18,12 @@ func NewAccountRepository(db *sql.DB) AccountRepository {
 	return &accountRepository{DB: db}
 }
 
+func (acc *accountRepository) SignIn(cmd *objectvalue.SignIn) (*response.SignInResponse, error) {
+	return &response.SignInResponse{CommonResponse: response.CommonResponse{Status: true, Code: 200, Message: "Success"}, User: entity.User{ID: 123, UserName: cmd.UserName, Name: "test", Password: "%r@*7%6789", Email: "test@test.com", PhoneNumber: "081234567890"}}, nil
+
+	//return nil, nil
+}
+
 // func (acc *accountRepository) Store() error {
 // 	return nil
 // }
@@ -24,6 +31,3 @@ func NewAccountRepository(db *sql.DB) AccountRepository {
 // func (acc *accountRepository) Delete()        {}
 //func (acc *accountRepository) GetById()       {}
 // func (acc *accountRepository) GetByUserName()       {}
-func (acc *accountRepository) SignIn(cmd *objectvalue.SignIn) (*response.SignInResponse, error) {
-	return nil, nil
-}
