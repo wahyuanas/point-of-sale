@@ -49,18 +49,18 @@ func (s *grpcServer) SignIn(ctx context.Context, in *pb.SignInRequest) (*pb.Sign
 	return &pb.SignInResponse{Response: &pb.CommonResponse{Status: true, Code: 200, Message: "Success"}, User: u}, err
 
 }
-func (s *grpcServer) SignOut(context.Context, *pb.SignOutRequest) (*pb.SignOutResponse, error) {
+func (s *grpcServer) SignOut(ctx context.Context, in *pb.SignOutRequest) (*pb.SignOutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
 }
-func (s *grpcServer) Update(context.Context, *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+func (s *grpcServer) Update(ctx context.Context, in *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (s *grpcServer) Delete(context.Context, *pb.DeleteRequest) (*pb.DeleteResponse, error) {
+func (s *grpcServer) Delete(ctx context.Context, in *pb.DeleteRequest) (*pb.DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (s *grpcServer) GetAccount(context.Context, *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
+func (s *grpcServer) GetAccount(ctx context.Context, in *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccount not implemented")
 }
-func (s *grpcServer) GetAccounts(*pb.GetAccountsRequest, pb.AccountService_GetAccountsServer) error {
+func (s *grpcServer) GetAccounts(in *pb.GetAccountsRequest, stream pb.AccountService_GetAccountsServer) error {
 	return nil
 }
