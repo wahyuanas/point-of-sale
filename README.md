@@ -2,7 +2,7 @@
 
 How To Run This Project
 
- - GraphQl Server
+ - GraphQL Server
  
       go run .
  
