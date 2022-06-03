@@ -6,6 +6,8 @@ import (
 	"log"
 	"net"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/wahyuanas/point-of-sale/account/delivery/grpc/server"
@@ -31,11 +33,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("cfg.DatabaseURL", cfg.DatabaseUser)
+	log.Println("cfg.DatabaseURL", cfg.DatabaseUser, cfg.DatabasePassword, cfg.DatabaseHost, cfg.DatabasePort, cfg.DatabaseName)
 
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", cfg.DatabaseUser, cfg.DatabasePassword, cfg.DatabaseHost, cfg.DatabasePort, cfg.DatabaseName)
 
-	db, err := sql.Open(DBURL, cfg.DatabaseDriver)
+	db, err := sql.Open(cfg.DatabaseDriver, DBURL)
 	if err != nil {
 		fmt.Printf("Cannot connect to %s database", cfg.DatabaseDriver)
 		log.Fatal("This is the error:", err)
@@ -47,7 +49,7 @@ func main() {
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal("failed to listen: v", err)
 	}
 	log.Printf("Listening on %s", port)
 
